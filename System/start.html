@@ -97,6 +97,7 @@
         <ol id="steps"></ol>
         <div class="link"><code id="url"></code><button id="copy" class="ghost">Link kopieren</button></div>
         <p class="muted" id="copyMsg">Diesen Link kannst du deinen Freunden schicken (WhatsApp, SMS …).</p>
+        <div class="link"><button id="playHere" class="hidden">▶ Jetzt auf diesem Handy spielen</button></div>
       </div>
     </div>
     <button class="ghost back" data-back>← Zurück</button>
@@ -118,7 +119,8 @@
   var ua = navigator.userAgent || '';
   var isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   var isAndroid = /Android/.test(ua);
-  var isPhone = isIOS || isAndroid || /[?&]handy=1/.test(location.search);
+  var coarse = false; try { coarse = matchMedia('(pointer: coarse)').matches && navigator.maxTouchPoints > 0; } catch (e) { }
+  var isPhone = isIOS || isAndroid || coarse || /[?&]handy=1/.test(location.search);
   var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || (window.matchMedia && matchMedia('(display-mode: fullscreen)').matches) || navigator.standalone;
   var local = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:';
   var STEPS = {
@@ -171,12 +173,16 @@
     return fetch('/__spiele', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .catch(function () { return fetch('/spiele.json', { cache: 'no-store' }).then(function (r) { return r.json(); }); });
   }
-  if (isPhone) {
+  if (!local) $('playHere').classList.remove('hidden');
+  $('playHere').onclick = function () { showMobile(); };
+  if (isPhone) showMobile();
+  function showMobile() {
     $('sub').textContent = 'Wähle ein Spiel';
     $('name').value = prefs.name || '';
     if (!standalone) { $('installCard').classList.remove('hidden'); steps($('mSteps'), isIOS ? STEPS.ios.slice(1, 3) : STEPS.and.slice(1, 3)); }
     show('mobile');
     loadGames().then(renderGames).catch(function () { $('games').innerHTML = '<p class="muted">Spiele konnten nicht geladen werden. Bitte die Seite neu laden.</p>'; });
+    scrollTo(0, 0);
   }
 })();
 </script>
