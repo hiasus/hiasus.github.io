@@ -45,7 +45,8 @@
   ol { margin: 0; padding-left: 22px; line-height: 1.7; }
   ol li { margin-bottom: 6px; }
   .link { display: flex; gap: 8px; margin: 14px 0 4px; flex-wrap: wrap; }
-  .link code { flex: 1; min-width: 0; background: #0b0c11; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 16px; color: #fff; user-select: all; overflow-wrap: anywhere; }
+  .link a#url { color: var(--acc); text-decoration: underline; font-weight: 700; }
+  .link a#url, .link code { flex: 1; min-width: 0; background: #0b0c11; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 16px; overflow-wrap: anywhere; }
   button, .btn { cursor: pointer; border: 0; border-radius: 10px; font-size: 16px; font-weight: 700; padding: 11px 16px; color: #1a1006; background: var(--acc); text-decoration: none; display: inline-block; text-align: center; }
   button.ghost, .btn.ghost { background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid var(--line); }
   button:focus-visible, .btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
@@ -95,7 +96,7 @@
       <div><div id="qr"></div><p class="muted">Mit der Handy-Kamera scannen</p></div>
       <div>
         <ol id="steps"></ol>
-        <div class="link"><code id="url"></code><button id="copy" class="ghost">Link kopieren</button></div>
+        <div class="link"><a id="url" href="https://hiasus.github.io/System/start.html?handy=1"></a><button id="copy" class="ghost">Link kopieren</button></div>
         <p class="muted" id="copyMsg">Diesen Link kannst du deinen Freunden schicken (WhatsApp, SMS …).</p>
         <div class="link"><button id="playHere" class="hidden">▶ Jetzt auf diesem Handy spielen</button></div>
       </div>
@@ -120,6 +121,7 @@
   var isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   var isAndroid = /Android/.test(ua);
   var coarse = false; try { coarse = matchMedia('(pointer: coarse)').matches && navigator.maxTouchPoints > 0; } catch (e) { }
+  var touchDev = false; try { touchDev = navigator.maxTouchPoints > 0 || 'ontouchstart' in window; } catch (e) { }
   var isPhone = isIOS || isAndroid || coarse || /[?&]handy=1/.test(location.search);
   var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || (window.matchMedia && matchMedia('(display-mode: fullscreen)').matches) || navigator.standalone;
   var local = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:';
@@ -140,8 +142,8 @@
   function selectUrl() { var r = document.createRange(); r.selectNodeContents($('url')); var s = getSelection(); s.removeAllRanges(); s.addRange(r); $('copyMsg').textContent = 'Link markiert – mit Strg+C kopieren.'; }
 
   $('tWin').onclick = function () { if (local) location.href = '/System/konsole.html'; else show('winPanel'); };
-  $('tAnd').onclick = function () { $('howTitle').textContent = 'Android – so kommt das Portal aufs Handy'; steps($('steps'), STEPS.and); show('howPanel'); };
-  $('tIos').onclick = function () { $('howTitle').textContent = 'iPhone / iPad – so kommt das Portal aufs Handy'; steps($('steps'), STEPS.ios); show('howPanel'); };
+  $('tAnd').onclick = function () { if (isPhone || touchDev) { showMobile(); return; } $('howTitle').textContent = 'Android – so kommt das Portal aufs Handy'; steps($('steps'), STEPS.and); show('howPanel'); };
+  $('tIos').onclick = function () { if (isPhone || touchDev) { showMobile(); return; } $('howTitle').textContent = 'iPhone / iPad – so kommt das Portal aufs Handy'; steps($('steps'), STEPS.ios); show('howPanel'); };
   document.querySelectorAll('[data-back]').forEach(function (b) { b.onclick = function () { show('choose'); }; });
   if (!local) $('winTxt').textContent = 'Am PC im Browser spielen oder die Windows-Version herunterladen.';
 
@@ -173,7 +175,7 @@
     return fetch('/__spiele', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .catch(function () { return fetch('/spiele.json', { cache: 'no-store' }).then(function (r) { return r.json(); }); });
   }
-  if (!local) $('playHere').classList.remove('hidden');
+  if (touchDev || isPhone) $('playHere').classList.remove('hidden');
   $('playHere').onclick = function () { showMobile(); };
   if (isPhone) showMobile();
   function showMobile() {
