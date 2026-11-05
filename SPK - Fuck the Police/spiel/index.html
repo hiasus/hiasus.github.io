@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>SPK – Fuck the Police</title>
+<link rel="icon" href="assets/spk_logo.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="hud" class="hidden">
+  <div id="stageHud" class="hidden"><div id="sgTop"><div id="sgTitle"></div><div id="sgTimer"></div></div><div id="sgInfo"></div><div class="sgbar"><i id="sgBar"></i></div><div id="sgHint"></div><div id="sgKeys"></div></div>
+  <div id="cross"><i class="l"></i><i class="r"></i><i class="t"></i><i class="b"></i><b></b></div>
+  <div id="hit"></div>
+  <div id="dmg"></div>
+  <div id="dmgdir"></div>
+  <div id="room"></div>
+  <div id="djs"></div>
+  <div id="levelBar"><span>LEVEL <b id="lvl">1</b>/10</span><span class="cnt" id="diffLbl">Mittel</span><span class="cnt">Cops erledigt: <b id="cnt">0/0</b></span></div>
+  <div id="feed"></div>
+  <div id="big"></div>
+  <div id="energy"><div class="lbl">ENERGIE</div><div class="bar"><div id="enIn"></div></div><div id="enPct">100%</div></div>
+  <div id="weapon" class="love"><div class="wn" id="wname">❤ LIEBESSTRAHL</div><b id="ammo">❤❤❤</b><span id="maxAmmo"></span><div id="slots"></div></div>
+  <div id="songBox"><div id="song">♫</div><div class="hint"><kbd>Q</kbd> <kbd>E</kbd> Song wechseln</div></div>
+  <div id="sub"></div>
+  <div id="hintF" class="hidden"><kbd>F</kbd> Nase ziehen – volle Energie</div>
+  <div id="snortFx"></div>
+  <div id="down" class="hidden">Du bist ausgeschaltet – im nächsten Level bist du wieder dabei.</div>
+</div>
+
+<div id="pause" class="overlay hidden">
+  <div class="panel">
+    <h2>PAUSE</h2>
+    <button id="bResume" class="btn">▶ Weiterspielen</button>
+    <button id="bRestart" class="btn ghost">↻ Neu starten</button>
+    <label id="pChapBox" class="dsel">Kapitel <select id="pChap"><option value="1">1 – LKW beladen</option><option value="2">2 – Fahrt zur Party</option><option value="3">3 – Boxen aufbauen</option><option value="4">4 – Der Rave</option></select></label>
+    <label id="pDiffBox" class="dsel">Schwierigkeit <select id="pDiff"><option value="einfach">Einfach</option><option value="mittel">Mittel</option><option value="schwer">Schwer</option></select></label>
+    <button id="bQuit" class="btn ghost">⏏ Hauptmenü</button>
+    <p class="help">Steuerung: <kbd>W A S D</kbd> laufen · <kbd>Maus</kbd> zielen · <kbd>Linksklick</kbd> schießen/werfen · <kbd>R</kbd> nachladen · <kbd>Leertaste</kbd> springen · <kbd>Strg</kbd> ducken (Deckung hinterm Pult!) · Nach dem UFO: <kbd>F</kbd> Kokain (linker Tisch) bzw. Ketamin (rechter Tisch) · <kbd>G</kbd> LSD-Trip · <kbd>1</kbd> Liebesstrahl · <kbd>2</kbd> Flash-Pistole · <kbd>3</kbd> Liebesgranate · <kbd>Mausrad</kbd> Waffe wechseln · <kbd>Q</kbd>/<kbd>E</kbd> Song wechseln · <kbd>F11</kbd> Vollbild</p>
+  </div>
+</div>
+
+<div id="over" class="overlay hidden">
+  <div class="panel">
+    <h2 id="overT">SPIEL VORBEI</h2>
+    <p id="overP"></p>
+    <button id="bAgain" class="btn">↻ Nochmal spielen</button>
+    <p id="overWait" class="help hidden">Warte, bis der Gastgeber neu startet…</p>
+    <button id="bQuit2" class="btn ghost">⏏ Hauptmenü</button>
+  </div>
+</div>
+
+<div id="menu">
+  <div class="box">
+    <div class="logo"><img src="assets/spk_logo.png" alt=""></div>
+    <div class="tag">ILLEGALE OPEN-AIR RAVE</div>
+    <h1>SPK – FUCK THE POLICE</h1>
+    <p class="story"><b>Kapitel 1:</b> Ladet gemeinsam die SPK-Boxen in den LKW – drehen, kippen, stapeln, bevor die Zeit abläuft. <b>Kapitel 2:</b> Fahrt mit den vollen LKWs durch den nächtlichen Wald zur Party – überholt Traktoren, weicht dem Gegenverkehr aus, jeder hat 2 Leben. <b>Kapitel 3:</b> Tragt alle Boxen aus dem LKW und stellt sie rund ums DJ-Pult auf. <b>Kapitel 4:</b> Die illegale SPK-Open-Air-Rave: Du stehst als DJ hinterm gepanzerten Mischpult und hältst die Polizei mit dem Liebesstrahl von der Crowd fern. Je mehr Spieler, desto schwerer.</p>
+    <label>Dein Name <input id="name" maxlength="16"></label>
+    <div id="menuBtns">
+      <button id="bStart" class="btn" disabled>🎧 PARTY STARTEN</button>
+      <div class="sep">MIT FREUNDEN</div>
+      <div class="row"><label>Code vom Gastgeber <input id="code" maxlength="5" placeholder="ABCDE" autocomplete="off"></label><button id="bJoin" class="btn ghost" disabled>⇄ Beitreten</button></div>
+      <div id="joinInfo"></div>
+      <details><summary>Einstellungen</summary>
+        <label>Maus-Empfindlichkeit <span id="vSens"></span><input id="sens" type="range" min="0.2" max="3" step="0.05"></label>
+        <label>Lautstärke <span id="vVol"></span><input id="vol" type="range" min="0" max="1" step="0.05"></label>
+        <label>Start bei <select id="chap"><option value="1">Kapitel 1 – LKW beladen</option><option value="2">Kapitel 2 – Fahrt zur Party</option><option value="3">Kapitel 3 – Boxen aufbauen</option><option value="4">Kapitel 4 – Der Rave</option></select></label>
+        <label>Schwierigkeit <select id="diff"><option value="einfach">Einfach</option><option value="mittel">Mittel</option><option value="schwer">Schwer</option></select></label>
+        <label>Grafik <select id="gfx"><option value="hoch">Hoch</option><option value="mittel">Mittel</option><option value="niedrig">Niedrig (schneller)</option></select></label>
+      </details>
+      <button id="bConsole" class="btn ghost hidden">🎮 Zurück zum Portal</button>
+    </div>
+    <div id="loadInfo">Lade…</div>
+    <p class="help"><kbd>W A S D</kbd> laufen · <kbd>Maus</kbd> zielen · <kbd>Linksklick</kbd> schießen · <kbd>R</kbd> nachladen · <kbd>Strg</kbd> ducken · <kbd>F</kbd>/<kbd>G</kbd> am Tisch · <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> Waffen · <kbd>Q</kbd>/<kbd>E</kbd> Song · <kbd>Esc</kbd> Pause · <kbd>F11</kbd> Vollbild</p>
+  </div>
+</div>
+<script src="lib/peerjs.min.js"></script>
+<script type="module" src="game.js"></script>
+<div id="rotateMsg"><b>⟲</b>Bitte das Handy quer halten</div>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GB Portal">
+<meta name="theme-color" content="#05060b">
+<title>Georg Brunner Gaming Portal</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/System/assets/icon-192.png">
+<link rel="icon" href="/System/assets/icon-192.png">
+<style>
+  /* Dunkle Arcade-Optik wie das 3D-Portal: Orange für Windows, Grün für Android, Blau für iPhone */
+  :root { --bg: #05060b; --panel: rgba(16, 18, 26, 0.92); --line: rgba(255, 255, 255, 0.12); --txt: #f1ece2; --mut: #9d978b; --acc: #ff8a1e; --and: #3ddc84; --ios: #37b6ff; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--txt); font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; }
+  body { background: radial-gradient(1000px 600px at 50% -10%, rgba(255, 138, 30, 0.18), transparent 60%), var(--bg); padding: max(18px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  .hidden { display: none !important; }
+  .brand { text-align: center; margin: 6px 0 22px; }
+  .brand small { display: block; font-family: Impact, "Arial Black", sans-serif; letter-spacing: 9px; color: #e9dcc3; font-size: 15px; }
+  .brand h1 { margin: 2px 0 0; font-family: Impact, "Arial Black", sans-serif; font-weight: 400; font-size: clamp(38px, 7vw, 64px); line-height: 1; color: var(--acc); letter-spacing: 1px; }
+  .brand h1 span { color: var(--txt); }
+  .brand p { color: var(--mut); margin: 10px 0 0; }
+  .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 720px) { .tiles { grid-template-columns: 1fr; } }
+  .tile { all: unset; cursor: pointer; display: flex; flex-direction: column; gap: 10px; padding: 22px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line); transition: transform .15s, border-color .15s; }
+  .tile:hover, .tile:focus-visible { transform: translateY(-3px); }
+  .tile:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  .tile .ic { width: 54px; height: 54px; border-radius: 14px; display: grid; place-items: center; font-size: 28px; font-weight: 900; color: #111; }
+  .tile h2 { margin: 0; font-family: Impact, "Arial Black", sans-serif; font-weight: 400; font-size: 32px; letter-spacing: 1px; }
+  .tile p { margin: 0; color: var(--mut); font-size: 14px; line-height: 1.5; }
+  .tile.win .ic { background: var(--acc); } .tile.win:hover { border-color: var(--acc); }
+  .tile.and .ic { background: var(--and); } .tile.and:hover { border-color: var(--and); }
+  .tile.ios .ic { background: var(--ios); } .tile.ios:hover { border-color: var(--ios); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px; margin-top: 18px; }
+  .card h3 { margin: 0 0 12px; font-size: 22px; }
+  .how { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 22px; align-items: start; }
+  @media (max-width: 640px) { .how { grid-template-columns: 1fr; } }
+  #qr { background: #fff; border-radius: 12px; padding: 10px; width: 220px; max-width: 100%; }
+  #qr img, #qr svg { width: 100%; height: auto; display: block; }
+  ol { margin: 0; padding-left: 22px; line-height: 1.7; }
+  ol li { margin-bottom: 6px; }
+  .link { display: flex; gap: 8px; margin: 14px 0 4px; flex-wrap: wrap; }
+  .link code { flex: 1; min-width: 0; background: #0b0c11; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 16px; color: #fff; user-select: all; overflow-wrap: anywhere; }
+  button, .btn { cursor: pointer; border: 0; border-radius: 10px; font-size: 16px; font-weight: 700; padding: 11px 16px; color: #1a1006; background: var(--acc); text-decoration: none; display: inline-block; text-align: center; }
+  button.ghost, .btn.ghost { background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid var(--line); }
+  button:focus-visible, .btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  .back { margin-top: 14px; }
+  .muted { color: var(--mut); font-size: 13px; line-height: 1.6; }
+  /* Handy-Ansicht */
+  label { display: block; color: var(--mut); font-size: 13px; margin-bottom: 10px; }
+  input { width: 100%; margin-top: 4px; background: #0b0c11; border: 1px solid var(--line); border-radius: 8px; color: #fff; font-size: 17px; padding: 10px 12px; outline: none; }
+  input:focus { border-color: var(--acc); }
+  .games { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .game { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .game .no { color: var(--acc); font-family: Impact, "Arial Black", sans-serif; letter-spacing: 3px; font-size: 13px; }
+  .game h4 { margin: 0; font-size: 21px; }
+  .game .meta { color: var(--mut); font-size: 13px; }
+  .game .row { display: flex; gap: 8px; margin-top: 6px; }
+  .game .row > * { flex: 1; }
+  .game input.code { font-family: Consolas, monospace; letter-spacing: 4px; text-transform: uppercase; text-align: center; margin: 0; }
+  .install { border-color: rgba(61, 220, 132, 0.4); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><small>GEORG BRUNNER</small><h1>GAMING <span>PORTAL</span></h1><p id="sub">Auf welchem Gerät willst du spielen?</p></div>
+
+  <!-- Auswahl -->
+  <div id="choose">
+    <div class="tiles">
+      <button class="tile win" id="tWin"><div class="ic">⊞</div><h2>WINDOWS</h2><p id="winTxt">Hier am PC spielen – mit Tastatur und Maus im 3D-Portal.</p></button>
+      <button class="tile and" id="tAnd"><div class="ic">▶</div><h2>ANDROID</h2><p>Auf dem Android-Handy oder Tablet spielen – mit Touch-Steuerung.</p></button>
+      <button class="tile ios" id="tIos"><div class="ic">i</div><h2>IPHONE / IPAD</h2><p>Auf dem iPhone oder iPad spielen – mit Touch-Steuerung.</p></button>
+    </div>
+    <p class="muted" style="text-align:center;margin-top:18px">Alle spielen zusammen: PC, Android und iPhone können sich gegenseitig mit dem Spiel-Code beitreten.</p>
+  </div>
+
+  <!-- Windows (im Internet) -->
+  <div id="winPanel" class="card hidden">
+    <h3>Windows</h3>
+    <div class="link"><a class="btn" href="/System/konsole.html">▶ Jetzt im Browser spielen</a><a class="btn ghost" id="zipLink" href="https://drive.google.com/file/d/1t74E3O4zzbKzG_UFVYE-AJETJGJ26ShM/view" target="_blank" rel="noopener">⬇ Windows-Version herunterladen</a></div>
+    <p class="muted">Die Windows-Version herunterladen, Zip-Datei entpacken und „Georg Brunner Gaming Portal.bat“ doppelklicken. Sie aktualisiert sich danach von selbst.</p>
+    <button class="ghost back" data-back>← Zurück</button>
+  </div>
+
+  <!-- Handy-Anleitung -->
+  <div id="howPanel" class="card hidden">
+    <h3 id="howTitle">Android</h3>
+    <div class="how">
+      <div><div id="qr"></div><p class="muted">Mit der Handy-Kamera scannen</p></div>
+      <div>
+        <ol id="steps"></ol>
+        <div class="link"><code id="url"></code><button id="copy" class="ghost">Link kopieren</button></div>
+        <p class="muted" id="copyMsg">Diesen Link kannst du deinen Freunden schicken (WhatsApp, SMS …).</p>
+      </div>
+    </div>
+    <button class="ghost back" data-back>← Zurück</button>
+  </div>
+
+  <!-- Handy: Spiele -->
+  <div id="mobile" class="hidden">
+    <div id="installCard" class="card install hidden"><h3>Als App installieren</h3><ol id="mSteps"></ol></div>
+    <div class="card"><label>Dein Name <input id="name" maxlength="16" autocomplete="off"></label><p class="muted">Halte das Handy beim Spielen quer. Um einem Freund beizutreten, gib den Code ein, der bei ihm im Spiel oben links steht.</p></div>
+    <div class="games" id="games" style="margin-top:18px"></div>
+  </div>
+</div>
+
+<script src="/System/lib/qrcode.js"></script>
+<script>
+(function () {
+  var WEB = 'https://hiasus.github.io/';
+  var $ = function (id) { return document.getElementById(id); };
+  var ua = navigator.userAgent || '';
+  var isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var isAndroid = /Android/.test(ua);
+  var isPhone = isIOS || isAndroid || /[?&]handy=1/.test(location.search);
+  var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || (window.matchMedia && matchMedia('(display-mode: fullscreen)').matches) || navigator.standalone;
+  var local = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:';
+  var STEPS = {
+    and: ['Öffne den Link am Handy in <b>Chrome</b> (QR-Code scannen oder Link schicken).', 'Tippe oben rechts auf <b>⋮</b> und dann auf <b>„App installieren“</b> oder <b>„Zum Startbildschirm hinzufügen“</b>.', 'Starte das Portal ab jetzt über das neue Symbol auf dem Startbildschirm.', 'Spiel wählen, Handy <b>quer</b> halten und los geht’s.'],
+    ios: ['Öffne den Link am iPhone in <b>Safari</b> (QR-Code scannen oder Link schicken).', 'Tippe unten auf <b>Teilen</b> (das Viereck mit dem Pfeil nach oben).', 'Wähle <b>„Zum Home-Bildschirm“</b> und tippe auf <b>Hinzufügen</b>.', 'Starte das Portal ab jetzt über das neue Symbol, halte das iPhone <b>quer</b>.']
+  };
+  function steps(el, list) { el.innerHTML = list.map(function (s) { return '<li>' + s + '</li>'; }).join(''); }
+  function show(id) { ['choose', 'winPanel', 'howPanel', 'mobile'].forEach(function (x) { $(x).classList.toggle('hidden', x !== id); }); }
+
+  // QR-Code
+  try { var q = qrcode(0, 'M'); q.addData(WEB); q.make(); $('qr').innerHTML = q.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); } catch (e) { $('qr').textContent = WEB; }
+  $('url').textContent = WEB;
+  $('copy').onclick = function () {
+    var ok = function () { $('copyMsg').textContent = 'Link kopiert – jetzt einfach an deine Freunde schicken.'; };
+    try { navigator.clipboard.writeText(WEB).then(ok, function () { selectUrl(); }); } catch (e) { selectUrl(); }
+  };
+  function selectUrl() { var r = document.createRange(); r.selectNodeContents($('url')); var s = getSelection(); s.removeAllRanges(); s.addRange(r); $('copyMsg').textContent = 'Link markiert – mit Strg+C kopieren.'; }
+
+  $('tWin').onclick = function () { if (local) location.href = '/System/konsole.html'; else show('winPanel'); };
+  $('tAnd').onclick = function () { $('howTitle').textContent = 'Android – so kommt das Portal aufs Handy'; steps($('steps'), STEPS.and); show('howPanel'); };
+  $('tIos').onclick = function () { $('howTitle').textContent = 'iPhone / iPad – so kommt das Portal aufs Handy'; steps($('steps'), STEPS.ios); show('howPanel'); };
+  document.querySelectorAll('[data-back]').forEach(function (b) { b.onclick = function () { show('choose'); }; });
+  if (!local) $('winTxt').textContent = 'Am PC im Browser spielen oder die Windows-Version herunterladen.';
+
+  // ----- Handy: direkt die Spiele zeigen -----
+  var prefs = {}; try { prefs = JSON.parse(localStorage.getItem('operation-hias') || '{}') || {}; } catch (e) { }
+  function saveName(n) { try { var s = JSON.parse(localStorage.getItem('operation-hias') || '{}') || {}; s.name = n; localStorage.setItem('operation-hias', JSON.stringify(s)); } catch (e) { } }
+  function mkCode() { var a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', s = ''; for (var i = 0; i < 5; i++) s += a[Math.floor(Math.random() * a.length)]; return s; }
+  function go(g, role, code) {
+    var name = ($('name').value || '').trim().slice(0, 16) || 'Handy-Spieler'; saveName(name);
+    location.href = g.pfad + (g.start || 'spiel/') + '?konsole=' + role + '&code=' + code + '&name=' + encodeURIComponent(name);
+  }
+  function renderGames(list) {
+    list.sort(function (a, b) { return (a.portal || 99) - (b.portal || 99); });
+    var box = $('games'); box.innerHTML = '';
+    list.forEach(function (g, i) {
+      var d = document.createElement('div'); d.className = 'game';
+      d.innerHTML = '<div class="no">PORTAL ' + (g.portal || i + 1) + '</div><h4></h4><div class="meta"></div>' +
+        '<button class="host">▶ Neues Spiel starten</button>' +
+        '<div class="row"><input class="code" maxlength="5" placeholder="CODE" autocomplete="off" aria-label="Code vom Freund"><button class="ghost join">Beitreten</button></div>';
+      d.querySelector('h4').textContent = g.name || g.ordner;
+      d.querySelector('.meta').textContent = [g.genre, g.spieler].filter(Boolean).join(' · ');
+      d.querySelector('.host').onclick = function () { go(g, 'host', mkCode()); };
+      var inp = d.querySelector('.code');
+      d.querySelector('.join').onclick = function () { var c = inp.value.trim().toUpperCase(); if (c.length < 4) { inp.focus(); inp.placeholder = 'CODE?'; return; } go(g, 'join', c); };
+      box.appendChild(d);
+    });
+  }
+  function loadGames() {
+    return fetch('/__spiele', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .catch(function () { return fetch('/spiele.json', { cache: 'no-store' }).then(function (r) { return r.json(); }); });
+  }
+  if (isPhone) {
+    $('sub').textContent = 'Wähle ein Spiel';
+    $('name').value = prefs.name || '';
+    if (!standalone) { $('installCard').classList.remove('hidden'); steps($('mSteps'), isIOS ? STEPS.ios.slice(1, 3) : STEPS.and.slice(1, 3)); }
+    show('mobile');
+    loadGames().then(renderGames).catch(function () { $('games').innerHTML = '<p class="muted">Spiele konnten nicht geladen werden. Bitte die Seite neu laden.</p>'; });
+  }
+})();
+</script>
+</body>
+</html>

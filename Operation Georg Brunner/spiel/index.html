@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Operation Georg Brunner</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='28' fill='%23ff8a1e'/><text x='32' y='42' font-size='28' text-anchor='middle' font-family='Impact' fill='%23111'>H</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<!-- ===== HUD ===== -->
+<div id="hud" class="hidden">
+  <div id="crosshair"><i class="l"></i><i class="r"></i><i class="t"></i><i class="b"></i><b></b></div>
+  <div id="hitmarker"></div>
+  <div id="scope" class="hidden"><div class="ring"></div><div class="lineh"></div><div class="linev"></div></div>
+  <div id="dmgdir"></div>
+  <div id="flash"></div>
+  <canvas id="radar" width="220" height="220"></canvas>
+  <div id="topbar">
+    <div class="team t"><span id="scT">0</span><small id="aliveT"></small></div>
+    <div id="timer">1:55</div>
+    <div class="team ct"><small id="aliveCT"></small><span id="scCT">0</span></div>
+  </div>
+  <div id="bombicon" class="hidden">💣</div>
+  <div id="killfeed"></div>
+  <div id="center"></div>
+  <div id="centerSmall"></div>
+  <div id="progress" class="hidden"><div class="lbl"></div><div class="bar"><i></i></div></div>
+  <div id="hint"></div>
+  <div id="bl">
+    <div class="stat"><span class="ico">✚</span><span id="hp">100</span></div>
+    <div class="stat"><span class="ico">⛨</span><span id="ar">0</span><span id="helm" class="hidden">⛑</span><span id="kit" class="hidden">✂</span></div>
+  </div>
+  <div id="money"><span>$</span><b id="cash">800</b><em id="cashDelta"></em></div>
+  <div id="br"><div id="wname">USP</div><div><b id="clip">12</b><span id="res">/ 100</span></div><div id="slots"></div></div>
+  <div id="chat"><div id="chatlog"></div><input id="chatin" class="hidden" maxlength="120" autocomplete="off" placeholder="Nachricht…"></div>
+  <div id="spec" class="hidden"></div>
+  <div id="netinfo"></div>
+</div>
+
+<!-- ===== Kaufmenü ===== -->
+<div id="buy" class="overlay hidden">
+  <div class="panel">
+    <h2>KAUFMENÜ <small id="buyMoney"></small> <small id="buyTime"></small></h2>
+    <div id="buyCats"></div>
+    <div id="buyItems"></div>
+    <p class="help">Zahlen 1–5 wählen · B oder Esc schließt · Klick kauft</p>
+  </div>
+</div>
+
+<!-- ===== Punktetafel ===== -->
+<div id="score" class="overlay hidden"><div class="panel wide"><h2>OPERATION GEORG BRUNNER <small id="scoreInfo"></small></h2><div class="cols"><div><h3 class="t">Terroristen <span id="sbT"></span></h3><table id="tabT"></table></div><div><h3 class="ct">Anti-Terror <span id="sbCT"></span></h3><table id="tabCT"></table></div></div><p class="help" id="specList"></p></div></div>
+
+<!-- ===== Radio ===== -->
+<div id="radio" class="overlay hidden"><div class="panel">
+  <h2>📻 Brunner FM <small>– alle auf dem Server hören mit</small></h2>
+  <div id="songs"></div>
+  <button class="btn ghost" data-song="-1">⏹ Radio aus</button>
+  <p class="help">Tipp: Eigene Lieder als <b>song1.mp3</b> … <b>song5.mp3</b> in den Ordner <b>musik</b> legen. Esc schließt.</p>
+</div></div>
+
+<!-- ===== Team-Auswahl ===== -->
+<div id="teamsel" class="overlay hidden"><div class="panel">
+  <h2>TEAM WÄHLEN</h2>
+  <div class="teams">
+    <button class="teamcard t" data-team="T"><b>TERRORISTEN</b><span id="tcT"></span><small>Bombe legen auf A oder B</small></button>
+    <button class="teamcard ct" data-team="CT"><b>ANTI-TERROR</b><span id="tcCT"></span><small>Bombenplätze verteidigen</small></button>
+  </div>
+  <div class="row"><button class="btn" data-team="AUTO">Automatisch</button><button class="btn ghost" data-team="SPEC">Zuschauen</button></div>
+</div></div>
+
+<!-- ===== Pause ===== -->
+<div id="pause" class="overlay hidden"><div class="panel">
+  <h2>PAUSE</h2>
+  <div class="col">
+    <button class="btn" id="resume">Weiterspielen</button>
+    <button class="btn ghost" id="pTeam">Team wechseln</button>
+    <button class="btn ghost" id="pSettings">Einstellungen</button>
+    <div id="pInvite" class="invite hidden"></div>
+    <button class="btn ghost hidden" id="pConsole">🎮 Zurück zum Portal</button>
+    <button class="btn danger" id="pQuit">Spiel verlassen</button>
+  </div>
+</div></div>
+
+<!-- ===== Hauptmenü ===== -->
+<div id="menu" class="overlay solid">
+  <a id="toConsole" class="consolelink hidden" href="/">🎮 Zum Portal</a>
+  <div class="menuwrap">
+    <div class="logo"><small>OPERATION</small><b>GEORG BRUNNER</b><em>Taktischer Team-Shooter · bis 7 gegen 7</em></div>
+    <div class="menurow">
+    <div id="mMain" class="panel col">
+      <label>Dein Name <input id="name" maxlength="16" value="Neue Pussy1"></label>
+      <button class="btn big" id="bHost">▶ Spiel erstellen</button>
+      <button class="btn big ghost" id="bJoin">⇄ Einem Freund beitreten</button>
+      <button class="btn ghost" id="bSettings">⚙ Einstellungen</button>
+      <button class="btn ghost" id="bHelp">⌨ Steuerung</button>
+      <p class="help" id="loadInfo">Lade Spieldaten…</p>
+        <p class="help">💡 <b>F11</b> = Vollbild. Im Innenhof steht das Radio „Brunner FM“, und zwei Französische Bulldoggen freuen sich, wenn du sie mit <b>E</b> streichelst. 🐶</p>
+    </div>
+    <div id="mKeys" class="panel keyspanel">
+      <h2>Steuerung</h2>
+      <table class="keys">
+        <tr><td>W A S D</td><td>Laufen</td></tr>
+        <tr><td>Maus</td><td>Zielen</td></tr>
+        <tr><td>Linke Maus</td><td>Schießen</td></tr>
+        <tr><td>Rechte Maus</td><td>Ranzoomen / Zielfernrohr</td></tr>
+        <tr><td>Leertaste</td><td>Springen</td></tr>
+        <tr><td>Strg</td><td>Ducken</td></tr>
+        <tr><td>Shift</td><td>Leise gehen</td></tr>
+        <tr><td>R</td><td>Nachladen</td></tr>
+        <tr><td>1 – 5 / Q</td><td>Waffe wählen / letzte Waffe</td></tr>
+        <tr><td>B</td><td>Kaufmenü</td></tr>
+        <tr><td>G</td><td>Waffe wegwerfen</td></tr>
+        <tr><td>E (halten)</td><td>Bombe legen / entschärfen</td></tr>
+        <tr><td>E</td><td>Radio / Hund streicheln</td></tr>
+        <tr><td>Tab</td><td>Punktetafel</td></tr>
+        <tr><td>Enter / U</td><td>Chat / Team-Chat</td></tr>
+        <tr><td>M</td><td>Team wechseln</td></tr>
+        <tr><td>Esc</td><td>Pause</td></tr>
+        <tr class="hl"><td>F11</td><td>Vollbild an / aus</td></tr>
+      </table>
+    </div>
+    </div>
+    <div id="mHost" class="panel col hidden">
+      <h2>Neues Spiel</h2>
+      <div class="grid2">
+        <label>Max. Spieler pro Team <select id="sMax"></select></label>
+        <label>Bot-Stärke <select id="sDiff"><option value="leicht">Leicht</option><option value="mittel" selected>Mittel</option><option value="schwer">Schwer</option><option value="profi">Profi</option></select></label>
+        <label>Bots Terroristen <select id="sBotsT"></select></label>
+        <label>Bots Anti-Terror <select id="sBotsCT"></select></label>
+        <label>Runden <select id="sRounds"><option>10</option><option selected>16</option><option>24</option><option>30</option></select></label>
+        <label>Rundenzeit <select id="sTime"><option value="90">1:30</option><option value="115" selected>1:55</option><option value="150">2:30</option><option value="180">3:00</option></select></label>
+      </div>
+      <label class="check"><input type="checkbox" id="sOnline" checked> Für Freunde öffnen (Online-Code erstellen)</label>
+      <label class="check"><input type="checkbox" id="sFF"> Eigenbeschuss (Team-Schaden)</label>
+      <p class="help">„Auto" füllt freie Plätze mit Bots auf. Echte Spieler ersetzen Bots automatisch.</p>
+      <div class="row"><button class="btn ghost" data-back>Zurück</button><button class="btn big" id="bStart">Los geht's</button></div>
+    </div>
+    <div id="mJoin" class="panel col hidden">
+      <h2>Beitreten</h2>
+      <label>Spiel-Code vom Gastgeber <input id="code" maxlength="6" placeholder="z.B. K7Q2M" style="text-transform:uppercase"></label>
+      <div class="row"><button class="btn ghost" data-back>Zurück</button><button class="btn big" id="bConnect">Verbinden</button></div>
+      <p class="help" id="joinInfo"></p>
+    </div>
+    <div id="mSettings" class="panel col hidden">
+      <h2>Einstellungen</h2>
+      <label>Maus-Empfindlichkeit <span class="val" id="vSens"></span><input type="range" id="oSens" min="0.2" max="4" step="0.05"></label>
+      <label>Sichtfeld (FOV) <span class="val" id="vFov"></span><input type="range" id="oFov" min="60" max="100" step="1"></label>
+      <label>Lautstärke <span class="val" id="vVol"></span><input type="range" id="oVol" min="0" max="1" step="0.01"></label>
+      <label>Radio-Lautstärke <span class="val" id="vMus"></span><input type="range" id="oMus" min="0" max="1" step="0.01"></label>
+      <label>Grafik <select id="oGfx"><option value="hoch">Hoch (schöne Schatten)</option><option value="mittel">Mittel</option><option value="niedrig">Niedrig (schneller)</option></select></label>
+      <label class="check"><input type="checkbox" id="oInvert"> Maus Y umkehren</label>
+      <div class="row"><button class="btn" data-back>Fertig</button></div>
+    </div>
+    <div id="mHelp" class="panel col hidden">
+      <h2>Steuerung</h2>
+      <table class="keys">
+        <tr><td>W A S D</td><td>Laufen</td><td>Maus</td><td>Zielen</td></tr>
+        <tr><td>Linke Maus</td><td>Schießen / Bombe legen</td><td>Rechte Maus</td><td>Zielfernrohr / Messer-Stich</td></tr>
+        <tr><td>Leertaste</td><td>Springen</td><td>Strg</td><td>Ducken</td></tr>
+        <tr><td>Shift</td><td>Leise gehen</td><td>R</td><td>Nachladen</td></tr>
+        <tr><td>1 2 3 4 5</td><td>Waffe wählen</td><td>Q / Mausrad</td><td>Waffe wechseln</td></tr>
+        <tr><td>B</td><td>Kaufmenü</td><td>G</td><td>Waffe wegwerfen</td></tr>
+        <tr><td>E (halten)</td><td>Bombe legen / entschärfen / Radio</td><td>Tab</td><td>Punktetafel</td></tr>
+        <tr><td>Enter / Z</td><td>Chat (alle / Team)</td><td>M</td><td>Team wechseln</td></tr>
+        <tr><td>Esc</td><td>Pause</td><td>F</td><td>Waffe ansehen</td></tr>
+        <tr><td>F11</td><td>Vollbild an/aus</td><td>E beim Hund</td><td>Hund streicheln</td></tr>
+      </table>
+      <p class="help">Ziel: Terroristen legen die Bombe auf Platz A oder B. Die Anti-Terror-Einheit verhindert das oder entschärft sie. Geld gibt es für Abschüsse und gewonnene Runden.</p>
+      <div class="row"><button class="btn" data-back>Zurück</button></div>
+    </div>
+  </div>
+</div>
+
+<div id="loading" class="overlay solid hidden"><div class="panel"><h2 id="loadTitle">Verbinde…</h2><div class="bar"><i id="loadBar"></i></div></div></div>
+<div id="clickToPlay" class="hidden">Klicken zum Weiterspielen</div>
+
+<script src="lib/peerjs.min.js"></script>
+<script type="module" src="game.js"></script>
+<div id="rotateMsg"><b>⟲</b>Bitte das Handy quer halten</div>
+</body>
+</html>

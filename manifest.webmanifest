@@ -1,0 +1,23 @@
+{
+ "name": "Georg Brunner Gaming Portal",
+ "short_name": "GB Portal",
+ "start_url": "/System/start.html",
+ "scope": "/",
+ "display": "fullscreen",
+ "orientation": "landscape",
+ "background_color": "#05060b",
+ "theme_color": "#05060b",
+ "icons": [
+  {
+   "src": "/System/assets/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "/System/assets/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any maskable"
+  }
+ ]
+}
