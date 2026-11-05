@@ -161,3 +161,13 @@ body.touch #room { transform: scale(0.6); transform-origin: top left; }
   #tBtns .tb.big { width: 82px; height: 82px; }
   #tJoy { width: 128px; height: 128px; }
 }
+
+/* Gewinnspiel-Hinweis */
+#promo { position: fixed; left: 50%; top: 18%; transform: translateX(-50%); z-index: 60; width: min(560px, calc(100vw - 32px)); padding: 18px 22px; border-radius: 14px; background: rgba(12, 4, 20, 0.92); border: 2px solid #ff2fb0; box-shadow: 0 0 40px rgba(255, 47, 176, 0.45); color: #fff; text-align: center; font: 600 17px/1.5 system-ui, sans-serif; }
+#promo.hidden { display: none; }
+#promo .pr-t { font: 400 30px Impact, "Arial Black", sans-serif; letter-spacing: 2px; color: #ffe22f; margin-bottom: 6px; }
+#promo p { margin: 0 0 12px; } #promo b { color: #ff7fd8; }
+#winPromo { margin: 14px 0; padding: 16px; border-radius: 12px; border: 2px dashed #ffe22f; background: rgba(255, 226, 47, 0.08); font: 600 16px/1.55 system-ui, sans-serif; color: #fff; }
+#winPromo.hidden { display: none; }
+#winPromo b { color: #ffe22f; } #winPromo .stamp { display: block; margin-top: 8px; font: 700 14px Consolas, monospace; color: #9ff3ff; }
+#over.win h2 { font-size: clamp(36px, 7vw, 54px); letter-spacing: 2px; }
