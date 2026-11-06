@@ -68,6 +68,10 @@
   .game input.code { font-family: Consolas, monospace; letter-spacing: 4px; text-transform: uppercase; text-align: center; margin: 0; }
   .install { border-color: rgba(61, 220, 132, 0.4); }
   .djh { font-family: Impact, "Arial Black", sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 1px; color: var(--acc); margin: 28px 0 12px; }
+  .party { margin-top: 0; text-align: center; background: linear-gradient(#7a4e2c, #5a3820); border-color: #3b2412; }
+  .party img { max-width: 100%; max-height: 70vh; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,.5); }
+  .party p { color: #f3e6d6; }
+  .party a { color: #fff; }
   .djs { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
   .dj { all: unset; cursor: pointer; display: flex; flex-direction: column; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px; text-align: center; }
   .dj:focus-visible { outline: 2px solid #fff; }
@@ -122,6 +126,8 @@
     <div id="installCard" class="card install hidden"><h3>Als App installieren</h3><ol id="mSteps"></ol></div>
     <div class="card"><label>Dein Name <input id="name" maxlength="16" autocomplete="off"></label><p class="muted">Halte das Handy beim Spielen quer. Um einem Freund beizutreten, gib den Code ein, der bei ihm im Spiel oben links steht.</p></div>
     <div class="games" id="games" style="margin-top:18px"></div>
+    <h3 class="djh">Nächste Party</h3>
+    <div class="card party" id="party"><p class="muted">Flyer folgt – bald steht hier, wann und wo die nächste SPK Party steigt!</p></div>
     <h3 class="djh">SPK DJs</h3>
     <div class="djs" id="djs"></div>
   </div>
@@ -201,7 +207,15 @@
     show('mobile');
     loadGames().then(renderGames).catch(function () { $('games').innerHTML = '<p class="muted">Spiele konnten nicht geladen werden. Bitte die Seite neu laden.</p>'; });
     scrollTo(0, 0);
-    loadDjs();
+    loadDjs(); loadParty();
+  }
+  function loadParty() {
+    fetch('/System/party.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (p) {
+      var box = $('party'); box.innerHTML = '';
+      if (p.flyer) { var img = document.createElement('img'); img.alt = 'Flyer der nächsten Party'; img.src = /^(https?:)?\/\//.test(p.flyer) ? p.flyer : '/System/flyer/' + p.flyer; box.appendChild(img); }
+      if (p.text) { var t = document.createElement('p'); t.textContent = p.text; box.appendChild(t); }
+      if (p.link) { var a = document.createElement('a'); a.href = p.link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Mehr Infos'; box.appendChild(a); }
+    }).catch(function () { });
   }
   var LINKS = [['instagram', 'Instagram'], ['facebook', 'Facebook'], ['soundcloud', 'SoundCloud'], ['tiktok', 'TikTok'], ['youtube', 'YouTube'], ['spotify', 'Spotify'], ['mixcloud', 'Mixcloud'], ['beatport', 'Beatport'], ['website', 'Webseite']];
   function fotoUrl(f) { return /^(https?:)?\/\//.test(f) ? f : '/System/dj-fotos/' + f; }
@@ -226,11 +240,16 @@
     $('djSheet').classList.remove('hidden');
   }
   // Uhr & Besucherzähler
-  var COUNTER = 'https://api.counterapi.dev/v1/spk-portal-hiasus/besucher', visitors = null;
+  var visitors = null;
+  function readCounter(hit) {
+    function num(r) { if (!r.ok) throw 0; return r.json().then(function (j) { var v = parseInt(j.value, 10); if (isNaN(v)) throw 0; return v; }); }
+    return fetch('https://abacus.jasoncameron.dev/' + (hit ? 'hit' : 'get') + '/spk-portal-hiasus/besucher', { cache: 'no-store' }).then(num)
+      .catch(function () { return fetch('https://countapi.mileshilliard.com/api/v1/' + (hit ? 'hit' : 'get') + '/spk-portal-hiasus-besucher', { cache: 'no-store' }).then(num); });
+  }
   function tickClock() { var d = new Date(); $('clockLine').innerHTML = d.toLocaleTimeString('de-AT', { hour: '2-digit', minute: '2-digit' }) + (visitors == null ? '' : ' <span>· Besucher: ' + visitors.toLocaleString('de-AT') + '</span>'); }
   tickClock(); setInterval(tickClock, 1000);
   (function () { var first = false; try { first = !sessionStorage.getItem('spk-gezaehlt'); sessionStorage.setItem('spk-gezaehlt', '1'); } catch (e) { }
-    fetch(COUNTER + (first ? '/up' : ''), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) { if (typeof j.count === 'number') { visitors = j.count; tickClock(); } }).catch(function () { }); })();
+    readCounter(first).then(function (v) { visitors = v; tickClock(); }).catch(function () { }); })();
   $('dsClose').onclick = function () { $('djSheet').classList.add('hidden'); };
   $('djSheet').onclick = function (e) { if (e.target.id === 'djSheet') $('djSheet').classList.add('hidden'); };
 })();

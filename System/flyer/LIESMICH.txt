@@ -1,0 +1,3 @@
+Hier kommt der Flyer fuer die naechste Party hinein (z. B. "party.jpg").
+In ..\party.json steht, welcher Flyer an der Holztafel im Portal haengt.
+Am einfachsten: Flyer an Claude schicken, Claude haengt ihn auf.
