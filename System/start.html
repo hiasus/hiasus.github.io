@@ -82,6 +82,11 @@
   .djlinks a { display: block; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--line); color: #fff; text-decoration: none; font-weight: 700; background: rgba(255,255,255,0.06); }
   #djSheet { position: fixed; inset: 0; z-index: 20; background: rgba(5,0,10,.75); display: flex; align-items: center; justify-content: center; padding: 16px; }
   #djSheet .card { width: min(420px, 100%); margin: 0; text-align: center; }
+#gb input { width: 100%; box-sizing: border-box; margin-bottom: 8px; }
+.gbrow { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.gbrow .btn { width: auto; margin: 0; padding: 10px 18px; }
+.gbe { border-top: 1px solid rgba(255,255,255,0.1); padding: 8px 0; }
+.gbe b { color: #9fe8b0; } .gbe span { opacity: .6; font-size: 12px; margin-left: 8px; } .gbe p { margin: 3px 0 0; overflow-wrap: anywhere; }
 </style>
 </head>
 <body>
@@ -131,6 +136,8 @@
     <div class="card party" id="party"><p class="muted">Flyer folgt – bald steht hier, wann und wo die nächste SPK Party steigt!</p></div>
     <h3 class="djh">SPK DJs</h3>
     <div class="djs" id="djs"></div>
+    <h3 class="djh">Gästebuch</h3>
+    <div class="card" id="gb"><form id="gbForm" class="hidden"><input id="gbText" maxlength="100" placeholder="Schreib etwas rein (max. 100 Zeichen)" autocomplete="off"><div class="gbrow"><span class="muted" id="gbCount">0 / 100</span><button class="btn" id="gbSend" type="submit">Eintragen</button></div><p class="muted" id="gbMsg"></p></form><div id="gbList"><p class="muted">Gästebuch wird geladen…</p></div></div>
   </div>
 </div>
 
@@ -210,7 +217,32 @@
     show('mobile');
     loadGames().then(renderGames).catch(function () { $('games').innerHTML = '<p class="muted">Spiele konnten nicht geladen werden. Bitte die Seite neu laden.</p>'; });
     scrollTo(0, 0);
-    loadDjs(); loadParty();
+    loadDjs(); loadParty(); loadGb();
+  }
+  var gbUrl = '';
+  function gbShow(list) {
+    var box = $('gbList'); box.innerHTML = '';
+    if (!list.length) { box.innerHTML = '<p class="muted">Noch keine Einträge – sei der Erste!</p>'; return; }
+    list.forEach(function (e) { var d = document.createElement('div'); d.className = 'gbe'; d.innerHTML = '<b></b><span></span><p></p>'; var dt = new Date(e.t); d.querySelector('b').textContent = e.n; d.querySelector('span').textContent = isNaN(dt) ? '' : dt.toLocaleDateString('de-AT'); d.querySelector('p').textContent = e.x; box.appendChild(d); });
+  }
+  function gbFetch(q) { return fetch(gbUrl + (q ? (gbUrl.indexOf('?') >= 0 ? '&' : '?') + q : ''), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) { gbShow(j.eintraege || []); return true; }); }
+  function loadGb() {
+    fetch('/System/gaestebuch.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (c) {
+      gbUrl = (c.url || '').trim();
+      if (!gbUrl) { $('gbList').innerHTML = '<p class="muted">Das Gästebuch wird gerade eingerichtet – bald kannst du hier reinschreiben.</p>'; return; }
+      $('gbForm').classList.remove('hidden');
+      $('gbText').oninput = function () { $('gbCount').textContent = $('gbText').value.length + ' / 100'; };
+      $('gbForm').onsubmit = function (ev) {
+        ev.preventDefault();
+        var text = $('gbText').value.replace(/\s+/g, ' ').trim().slice(0, 100); if (!text) return;
+        var last = 0; try { last = +localStorage.getItem('spk-gb-last') || 0; } catch (e) { }
+        if (Date.now() - last < 30000) { $('gbMsg').textContent = 'Bitte kurz warten, bevor du nochmal schreibst.'; return; }
+        var name = (($('name').value || prefs.name || 'Gast').trim() || 'Gast').slice(0, 20);
+        $('gbSend').disabled = true; $('gbMsg').textContent = 'Wird gespeichert…';
+        gbFetch('name=' + encodeURIComponent(name) + '&text=' + encodeURIComponent(text)).then(function () { try { localStorage.setItem('spk-gb-last', String(Date.now())); } catch (e) { } $('gbText').value = ''; $('gbCount').textContent = '0 / 100'; $('gbMsg').textContent = 'Danke! Dein Eintrag steht jetzt im Gästebuch.'; }).catch(function () { $('gbMsg').textContent = 'Hat nicht geklappt – ist das Internet an?'; }).then(function () { $('gbSend').disabled = false; });
+      };
+      gbFetch().catch(function () { $('gbList').innerHTML = '<p class="muted">Gästebuch gerade nicht erreichbar.</p>'; });
+    }).catch(function () { });
   }
   function loadParty() {
     fetch('/System/party.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (p) {

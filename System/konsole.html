@@ -75,7 +75,19 @@
 #djLinks .djl { display: block; padding: 11px 14px; border-radius: 10px; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--c); color: #fff; text-decoration: none; font-weight: 700; font-size: 16px; }
 #djLinks .djl:hover, #djLinks .djl:focus-visible { background: var(--c); color: #000; outline: none; }
 #djLinks .djnone { color: #9d978b; font-size: 14px; margin: 6px 0 0; }
-#djClose { position: absolute; top: 8px; right: 10px; background: none; border: 0; color: #fff; font-size: 22px; cursor: pointer; }
+#gbBox { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: rgba(5,0,10,0.72); backdrop-filter: blur(4px); }
+#gbBox.hidden { display: none; }
+#gbBox .gbp { width: min(520px, calc(100vw - 32px)); max-height: 92vh; overflow-y: auto; border-color: #4f8f64; text-align: left; }
+#gbBox h2 { color: #9fe8b0; text-align: center; }
+#gbForm input, #gbForm textarea { width: 100%; margin: 0 0 8px; background: #0b0c11; border: 1px solid var(--line); border-radius: 8px; color: #fff; font: 16px "Segoe UI", system-ui, sans-serif; padding: 10px 12px; resize: none; }
+.gbrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.gbrow span { color: var(--mut); font-size: 13px; }
+.gbrow button { width: auto; margin: 0; padding: 10px 18px; font-size: 16px; background: #4f8f64; color: #fff; }
+#gbMsg { color: #9fe8b0; font-size: 13px; min-height: 16px; margin: 6px 0 10px; }
+#gbList { display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
+.gbe { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 8px 12px; }
+.gbe b { color: #9fe8b0; } .gbe span { color: var(--mut); font-size: 12px; margin-left: 8px; } .gbe p { margin: 4px 0 0; overflow-wrap: anywhere; }
+#gbClose, #djClose { position: absolute; top: 8px; right: 10px; background: none; border: 0; color: #fff; font-size: 22px; cursor: pointer; }
 #hudClock { position: absolute; right: 18px; top: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 14px; text-align: right; font-size: 13px; color: #b9aec7; }
 #hudClock:empty { display: none; }
 #hudClock b { display: block; font: 700 26px Consolas, "Courier New", monospace; color: #fff; letter-spacing: 1px; }
@@ -129,6 +141,9 @@ body.touch #prompt { top: auto; bottom: 120px; font-size: 15px; }
 <span id="netStatus" class="hidden"></span>
 <div id="flash"><div id="flashText"></div></div>
 <div id="djBox" class="hidden"><div class="djp"><button id="djClose" aria-label="Schließen">✕</button><img id="djPhoto" class="hidden" alt=""><h2 id="djName"></h2><p id="djInfo"></p><div id="djLinks"></div></div></div>
+<div id="gbBox" class="hidden"><div class="djp gbp"><button id="gbClose" aria-label="Schließen">✕</button><h2>GÄSTEBUCH</h2>
+<form id="gbForm"><input id="gbName" maxlength="20" placeholder="Dein Name" autocomplete="off"><textarea id="gbText" maxlength="100" rows="2" placeholder="Schreib etwas ins Gästebuch (max. 100 Zeichen)"></textarea><div class="gbrow"><span id="gbCount">0 / 100</span><button id="gbSend" type="submit">Eintragen</button></div><p id="gbMsg"></p></form>
+<div id="gbList"></div></div></div>
 <div id="menu">
   <div class="box">
     <div class="brand"><small>WILLKOMMEN IM</small><h1>SPK <span>PORTAL</span></h1></div>
