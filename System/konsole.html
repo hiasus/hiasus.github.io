@@ -2,7 +2,12 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/System/assets/icon-192.png">
 <title>SPK Portal</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect x='4' y='16' width='56' height='32' rx='14' fill='%23ff8a1e'/><circle cx='20' cy='32' r='5' fill='%23111'/><circle cx='44' cy='28' r='3' fill='%23111'/><circle cx='50' cy='34' r='3' fill='%23111'/></svg>">
 <style>
@@ -74,6 +79,39 @@
 #hudClock { position: absolute; right: 18px; top: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 14px; text-align: right; font-size: 13px; color: #b9aec7; }
 #hudClock:empty { display: none; }
 #hudClock b { display: block; font: 700 26px Consolas, "Courier New", monospace; color: #fff; letter-spacing: 1px; }
+
+#talkInd { position: absolute; left: 50%; bottom: 64px; transform: translateX(-50%); background: rgba(255,47,176,0.85); color: #fff; font-weight: 700; padding: 8px 16px; border-radius: 20px; font-size: 15px; }
+#room .tk { color: #ff7fd8; font-size: 12px; font-weight: 700; }
+/* ---------- Touch (Handy / Tablet) ---------- */
+.touchonly { display: none; } body.touch .touchonly { display: block; color: var(--mut); font-size: 13px; text-align: center; margin-top: 10px; line-height: 1.5; }
+#touch { position: fixed; inset: 0; z-index: 30; user-select: none; -webkit-user-select: none; touch-action: none; }
+#tLook { position: absolute; inset: 0; }
+#tJoy { position: absolute; left: calc(18px + env(safe-area-inset-left, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); width: 140px; height: 140px; }
+#tJoyBase { position: absolute; inset: 0; border-radius: 50%; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.25); }
+#tKnob { position: absolute; left: 50%; top: 50%; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; background: rgba(255,47,176,0.55); border: 2px solid rgba(255,255,255,0.7); }
+#tBtns { position: absolute; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 12px; align-items: flex-end; }
+#touch .tb { width: 66px; height: 66px; margin: 0; padding: 0; border-radius: 50%; border: 2px solid rgba(255,255,255,0.55); background: rgba(20,16,30,0.55); color: #fff; font: 800 12px system-ui, sans-serif; touch-action: none; }
+#touch .tb.big { width: 86px; height: 86px; font-size: 26px; }
+#touch .tb.hot { background: rgba(255,47,176,0.6); border-color: #ff7fd8; }
+#touch .tb.on { transform: scale(0.92); filter: brightness(1.4); }
+#tPause { position: absolute; top: calc(10px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); width: 52px; height: 38px; margin: 0; padding: 0; border-radius: 10px; border: 1px solid rgba(255,255,255,0.4); background: rgba(0,0,0,0.45); color: #fff; font-size: 20px; }
+body.touch #keys, body.touch #clickHint { display: none !important; }
+body.touch #room { transform: scale(0.62); transform-origin: top left; }
+body.touch #hudClock { transform: scale(0.75); transform-origin: top right; }
+body.touch #prompt { top: auto; bottom: 120px; font-size: 15px; }
+@media (max-height: 560px) {
+  .box { padding: 14px 18px; max-height: 94vh; }
+  .brand h1 { font-size: 34px; }
+  .brand small { font-size: 12px; letter-spacing: 6px; }
+  #menuTitle { margin-bottom: 8px; }
+  button { padding: 10px 14px; font-size: 16px; }
+  .help { display: none; }
+}
+#rotateMsg { display: none; }
+@media (orientation: portrait) {
+  body.touch #rotateMsg { display: flex; position: fixed; inset: 0; z-index: 100; background: #05060b; color: #fff; align-items: center; justify-content: center; flex-direction: column; gap: 14px; font: 700 20px system-ui; text-align: center; padding: 24px; }
+  body.touch #rotateMsg b { font-size: 64px; }
+}
 </style>
 </head>
 <body>
@@ -82,10 +120,11 @@
   <div id="cross"></div>
   <div id="room"></div>
   <div id="hudClock"></div>
+  <div id="talkInd" class="hidden">🎤 Du sprichst…</div>
   <div id="toasts"></div>
   <div id="prompt" class="hidden"></div>
   <div id="clickHint" class="hidden">Klicken zum Weiterspielen</div>
-  <div id="keys"><kbd>W A S D</kbd> laufen · <kbd>Maus</kbd> umsehen · <kbd>Leertaste</kbd> springen · <kbd>Shift</kbd> langsam · In ein Portal laufen = Spiel starten · Bilderrahmen anklicken = DJ-Links · <kbd>Esc</kbd> Menü · <kbd>F11</kbd> Vollbild</div>
+  <div id="keys"><kbd>W A S D</kbd> laufen · <kbd>Maus</kbd> umsehen · <kbd>Leertaste</kbd> springen · <kbd>Shift</kbd> langsam · <kbd>V</kbd> halten = sprechen · In ein Portal laufen = Spiel starten · Bilderrahmen anklicken = DJ-Links · <kbd>Esc</kbd> Menü · <kbd>F11</kbd> Vollbild</div>
 </div>
 <span id="netStatus" class="hidden"></span>
 <div id="flash"><div id="flashText"></div></div>
@@ -105,10 +144,12 @@
     <div id="joinInfo"></div>
     <button id="bOwn" class="ghost" style="font-size:14px;padding:9px">Zurück in den eigenen Raum</button>
     <div class="help">Deine Freunde starten ihr eigenes Portal und geben deinen Raum-Code ein. Geht einer von euch in ein Portal, startet das Spiel sofort für alle im Raum. Der Computer vom Raum-Besitzer ist dann der Spiel-Server.</div>
+    <div id="touchInfo" class="touchonly"><a href="/System/start.html?liste=1" style="color:#9ff3ff">Einfache Spieleliste, DJs &amp; nächste Party</a><span id="instHint"><br>Tipp: Im Browser-Menü <b>„Zum Startbildschirm hinzufügen“</b>, dann startet das Portal wie eine App.</span></div>
     <div id="loadInfo">Lade…</div>
   </div>
 </div>
 <script src="/System/lib/peerjs.min.js"></script>
 <script type="module" src="/System/konsole.js"></script>
+<div id="rotateMsg"><b>⟲</b>Bitte das Handy quer halten</div>
 </body>
 </html>

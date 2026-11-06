@@ -115,7 +115,7 @@
         <ol id="steps"></ol>
         <div class="link"><a id="url" href="https://spk-portal.github.io/System/start.html?handy=1"></a><button id="copy" class="ghost">Link kopieren</button></div>
         <p class="muted" id="copyMsg">Diesen Link kannst du deinen Freunden schicken (WhatsApp, SMS …).</p>
-        <div class="link"><button id="playHere" class="hidden">▶ Jetzt auf diesem Handy spielen</button></div>
+        <div class="link"><button id="playHere" class="hidden">▶ Jetzt auf diesem Handy ins Portal</button></div>
       </div>
     </div>
     <button class="ghost back" data-back>← Zurück</button>
@@ -123,6 +123,7 @@
 
   <!-- Handy: Spiele -->
   <div id="mobile" class="hidden">
+    <a class="btn" href="/System/konsole.html" style="display:block;margin-bottom:14px">▶ In den Portal-Raum</a>
     <div id="installCard" class="card install hidden"><h3>Als App installieren</h3><ol id="mSteps"></ol></div>
     <div class="card"><label>Dein Name <input id="name" maxlength="16" autocomplete="off"></label><p class="muted">Halte das Handy beim Spielen quer. Um einem Freund beizutreten, gib den Code ein, der bei ihm im Spiel oben links steht.</p></div>
     <div class="games" id="games" style="margin-top:18px"></div>
@@ -164,8 +165,8 @@
   function selectUrl() { var r = document.createRange(); r.selectNodeContents($('url')); var s = getSelection(); s.removeAllRanges(); s.addRange(r); $('copyMsg').textContent = 'Link markiert – mit Strg+C kopieren.'; }
 
   $('tWin').onclick = function () { if (local) location.href = '/System/konsole.html'; else show('winPanel'); };
-  $('tAnd').onclick = function () { if (isPhone || touchDev) { showMobile(); return; } $('howTitle').textContent = 'Android – so kommt das Portal aufs Handy'; steps($('steps'), STEPS.and); show('howPanel'); };
-  $('tIos').onclick = function () { if (isPhone || touchDev) { showMobile(); return; } $('howTitle').textContent = 'iPhone / iPad – so kommt das Portal aufs Handy'; steps($('steps'), STEPS.ios); show('howPanel'); };
+  $('tAnd').onclick = function () { if (isPhone || touchDev) { location.href = '/System/konsole.html'; return; } $('howTitle').textContent = 'Android – so kommt das Portal aufs Handy'; steps($('steps'), STEPS.and); show('howPanel'); };
+  $('tIos').onclick = function () { if (isPhone || touchDev) { location.href = '/System/konsole.html'; return; } $('howTitle').textContent = 'iPhone / iPad – so kommt das Portal aufs Handy'; steps($('steps'), STEPS.ios); show('howPanel'); };
   document.querySelectorAll('[data-back]').forEach(function (b) { b.onclick = function () { show('choose'); }; });
   if (!local) $('winTxt').textContent = 'Am PC im Browser spielen oder die Windows-Version herunterladen.';
 
@@ -198,7 +199,9 @@
       .catch(function () { return fetch('/spiele.json', { cache: 'no-store' }).then(function (r) { return r.json(); }); });
   }
   if (touchDev || isPhone) $('playHere').classList.remove('hidden');
-  $('playHere').onclick = function () { showMobile(); };
+  $('playHere').onclick = function () { location.href = '/System/konsole.html'; };
+  var wantList = /[?&]liste=1/.test(location.search);
+  if (isPhone && !wantList) { location.replace('/System/konsole.html'); return; }
   if (isPhone) showMobile();
   function showMobile() {
     $('sub').textContent = 'Wähle ein Spiel';
