@@ -126,6 +126,16 @@ body.touch #prompt { top: auto; bottom: 120px; font-size: 15px; }
   body.touch #rotateMsg b { font-size: 64px; }
 }
 #menu .volrow { display: block; font-size: 13px; margin: 2px 0 6px; } #menu .volrow input { width: 100%; padding: 0; accent-color: #ff2fb0; }
+#volW { position: fixed; top: 92px; right: 18px; z-index: 9999; font: 14px "Segoe UI", system-ui, sans-serif; color: #fff; }
+#volBtn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25); background: rgba(10,10,16,0.7); color: #fff; font-size: 20px; cursor: pointer; padding: 0; margin: 0; }
+#volBtn.off { background: #e0245e; }
+#volPop { position: absolute; right: 0; top: 52px; width: 230px; background: rgba(12,10,20,0.95); border: 1px solid rgba(255,47,176,0.5); border-radius: 12px; padding: 12px; display: grid; gap: 10px; }
+#volPop.hidden { display: none; }
+#volPop label { display: block; } #volPop input { width: 100%; accent-color: #ff2fb0; padding: 0; }
+#volPop .vrow button { width: 100%; margin: 0; padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: #26222e; color: #fff; font-weight: 700; font-size: 14px; }
+#volPop .vrow button.on { background: #e0245e; }
+#volPop small { opacity: 0.65; font-size: 11px; }
+body.touch #volPop small { display: none; }
 </style>
 </head>
 <body>
@@ -143,6 +153,13 @@ body.touch #prompt { top: auto; bottom: 120px; font-size: 15px; }
 <span id="netStatus" class="hidden"></span>
 <div id="flash"><div id="flashText"></div></div>
 <div id="djBox" class="hidden"><div class="djp"><button id="djClose" aria-label="Schließen">✕</button><img id="djPhoto" class="hidden" alt=""><h2 id="djName"></h2><p id="djInfo"></p><div id="djLinks"></div></div></div>
+<div id="volW"><button id="volBtn" title="Lautstärke">🔊</button>
+  <div id="volPop" class="hidden">
+    <label>🔊 Lautstärke <span id="wvVol"></span><input id="wVol" type="range" min="0" max="1" step="0.05"></label>
+    <div class="vrow"><button id="muteAll">🔇 Ton aus</button></div>
+    <small>PC: <kbd>Esc</kbd> → hier klicken</small>
+  </div>
+</div>
 <div id="gbBox" class="hidden"><div class="djp gbp"><button id="gbClose" aria-label="Schließen">✕</button><h2>GÄSTEBUCH</h2>
 <form id="gbForm"><input id="gbName" maxlength="20" placeholder="Dein Name" autocomplete="off"><textarea id="gbText" maxlength="100" rows="2" placeholder="Schreib etwas ins Gästebuch (max. 100 Zeichen)"></textarea><div class="gbrow"><span id="gbCount">0 / 100</span><button id="gbSend" type="submit">Eintragen</button></div><p id="gbMsg"></p></form>
 <div id="gbList"></div></div></div>

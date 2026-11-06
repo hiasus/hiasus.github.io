@@ -177,3 +177,14 @@ body.touch #room { transform: scale(0.6); transform-origin: top left; }
 #pause .vols label { display: block; font-size: 14px; }
 #pause .vols input { width: 100%; accent-color: #ff2fb0; }
 #volToast { position: fixed; left: 50%; top: 18%; transform: translateX(-50%); z-index: 60; background: rgba(10,10,14,0.85); color: #fff; font: 700 18px 'Segoe UI', system-ui, sans-serif; padding: 10px 18px; border-radius: 12px; pointer-events: none; }
+
+#volW { position: fixed; top: 10px; right: 64px; z-index: 9999; font: 14px 'Segoe UI', system-ui, sans-serif; color: #fff; }
+#volBtn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25); background: rgba(10,10,16,0.7); color: #fff; font-size: 20px; cursor: pointer; }
+#volBtn.off { background: #e0245e; }
+#volPop { position: absolute; right: 0; top: 52px; width: 250px; background: rgba(12,10,20,0.95); border: 1px solid rgba(255,47,176,0.5); border-radius: 12px; padding: 12px; display: grid; gap: 10px; }
+#volPop.hidden { display: none; }
+#volPop label { display: block; } #volPop input { width: 100%; accent-color: #ff2fb0; }
+#volPop .vrow { display: flex; gap: 8px; } #volPop .vrow button { flex: 1; padding: 8px 4px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: #26222e; color: #fff; font-weight: 700; cursor: pointer; }
+#volPop .vrow button.on { background: #e0245e; }
+#volPop small { opacity: 0.65; font-size: 11px; }
+body.touch #volPop small { display: none; }
