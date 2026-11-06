@@ -25,6 +25,8 @@
   .brand h1 { margin: 2px 0 0; font-family: Impact, "Arial Black", sans-serif; font-weight: 400; font-size: clamp(38px, 7vw, 64px); line-height: 1; color: var(--acc); letter-spacing: 1px; }
   .brand h1 span { color: var(--txt); }
   .brand p { color: var(--mut); margin: 10px 0 0; }
+  .clock { margin-top: 10px; font: 600 15px Consolas, "Courier New", monospace; color: #e8f7ff; letter-spacing: .5px; }
+  .clock span { color: var(--mut); font-family: "Segoe UI", system-ui, sans-serif; font-weight: 500; }
   .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
   @media (max-width: 720px) { .tiles { grid-template-columns: 1fr; } }
   .tile { all: unset; cursor: pointer; display: flex; flex-direction: column; gap: 10px; padding: 22px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line); transition: transform .15s, border-color .15s; }
@@ -80,7 +82,7 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="brand"><small>WILLKOMMEN IM</small><h1>SPK <span>PORTAL</span></h1><p id="sub">Auf welchem Gerät willst du spielen?</p></div>
+  <div class="brand"><small>WILLKOMMEN IM</small><h1>SPK <span>PORTAL</span></h1><div id="clockLine" class="clock"></div><p id="sub">Auf welchem Gerät willst du spielen?</p></div>
 
   <!-- Auswahl -->
   <div id="choose">
@@ -223,6 +225,12 @@
     if (!l.children.length) l.innerHTML = '<p class="muted">Für diesen DJ sind noch keine Links eingetragen.</p>';
     $('djSheet').classList.remove('hidden');
   }
+  // Uhr & Besucherzähler
+  var COUNTER = 'https://api.counterapi.dev/v1/spk-portal-hiasus/besucher', visitors = null;
+  function tickClock() { var d = new Date(); $('clockLine').innerHTML = d.toLocaleTimeString('de-AT', { hour: '2-digit', minute: '2-digit' }) + (visitors == null ? '' : ' <span>· Besucher: ' + visitors.toLocaleString('de-AT') + '</span>'); }
+  tickClock(); setInterval(tickClock, 1000);
+  (function () { var first = false; try { first = !sessionStorage.getItem('spk-gezaehlt'); sessionStorage.setItem('spk-gezaehlt', '1'); } catch (e) { }
+    fetch(COUNTER + (first ? '/up' : ''), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) { if (typeof j.count === 'number') { visitors = j.count; tickClock(); } }).catch(function () { }); })();
   $('dsClose').onclick = function () { $('djSheet').classList.add('hidden'); };
   $('djSheet').onclick = function (e) { if (e.target.id === 'djSheet') $('djSheet').classList.add('hidden'); };
 })();

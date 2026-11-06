@@ -70,6 +70,9 @@
 #djLinks .djl:hover, #djLinks .djl:focus-visible { background: var(--c); color: #000; outline: none; }
 #djLinks .djnone { color: #9d978b; font-size: 14px; margin: 6px 0 0; }
 #djClose { position: absolute; top: 8px; right: 10px; background: none; border: 0; color: #fff; font-size: 22px; cursor: pointer; }
+#hudClock { position: absolute; right: 18px; top: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 14px; text-align: right; font-size: 13px; color: #b9aec7; }
+#hudClock:empty { display: none; }
+#hudClock b { display: block; font: 700 26px Consolas, "Courier New", monospace; color: #fff; letter-spacing: 1px; }
 </style>
 </head>
 <body>
@@ -77,6 +80,7 @@
 <div id="hud">
   <div id="cross"></div>
   <div id="room"></div>
+  <div id="hudClock"></div>
   <div id="toasts"></div>
   <div id="prompt" class="hidden"></div>
   <div id="clickHint" class="hidden">Klicken zum Weiterspielen</div>
