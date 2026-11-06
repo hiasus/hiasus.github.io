@@ -172,3 +172,8 @@ body.touch #room { transform: scale(0.6); transform-origin: top left; }
 #winPromo.hidden { display: none; }
 #winPromo b { color: #ffe22f; } #winPromo .stamp { display: block; margin-top: 8px; font: 700 14px Consolas, monospace; color: #9ff3ff; }
 #over.win h2 { font-size: clamp(36px, 7vw, 54px); letter-spacing: 2px; }
+
+#pause .vols { display: grid; gap: 8px; margin: 10px 0; text-align: left; }
+#pause .vols label { display: block; font-size: 14px; }
+#pause .vols input { width: 100%; accent-color: #ff2fb0; }
+#volToast { position: fixed; left: 50%; top: 18%; transform: translateX(-50%); z-index: 60; background: rgba(10,10,14,0.85); color: #fff; font: 700 18px 'Segoe UI', system-ui, sans-serif; padding: 10px 18px; border-radius: 12px; pointer-events: none; }

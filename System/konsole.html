@@ -125,6 +125,7 @@ body.touch #prompt { top: auto; bottom: 120px; font-size: 15px; }
   body.touch #rotateMsg { display: flex; position: fixed; inset: 0; z-index: 100; background: #05060b; color: #fff; align-items: center; justify-content: center; flex-direction: column; gap: 14px; font: 700 20px system-ui; text-align: center; padding: 24px; }
   body.touch #rotateMsg b { font-size: 64px; }
 }
+#menu .volrow { display: block; font-size: 13px; margin: 2px 0 6px; } #menu .volrow input { width: 100%; padding: 0; accent-color: #ff2fb0; }
 </style>
 </head>
 <body>
@@ -150,6 +151,7 @@ body.touch #prompt { top: auto; bottom: 120px; font-size: 15px; }
     <div class="brand"><small>WILLKOMMEN IM</small><h1>SPK <span>PORTAL</span></h1></div>
     <p id="menuTitle">Lauf durch den Raum und geh in ein Portal, um ein Spiel zu starten.</p>
     <label>Dein Name <input id="name" maxlength="16"></label>
+    <label class="volrow">🔊 Lautstärke <span id="vVol"></span><input id="vol" type="range" min="0" max="1" step="0.05"></label>
     <button id="bEnter" disabled>▶ Portal betreten</button>
     <div class="myc"><span id="mCodeLbl">Dein Raum-Code</span><b id="mCode">—</b></div>
     <div class="sep">MIT FREUNDEN</div>
