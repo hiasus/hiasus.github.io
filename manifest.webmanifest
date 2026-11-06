@@ -1,6 +1,6 @@
 {
- "name": "Georg Brunner Gaming Portal",
- "short_name": "GB Portal",
+ "name": "SPK Portal",
+ "short_name": "SPK Portal",
  "start_url": "/System/start.html",
  "scope": "/",
  "display": "fullscreen",

@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Georg Brunner Gaming Portal</title>
+<title>SPK Portal</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect x='4' y='16' width='56' height='32' rx='14' fill='%23ff8a1e'/><circle cx='20' cy='32' r='5' fill='%23111'/><circle cx='44' cy='28' r='3' fill='%23111'/><circle cx='50' cy='34' r='3' fill='%23111'/></svg>">
 <style>
-  :root { --acc: #ff8a1e; --acc2: #37b6ff; --txt: #f1ece2; --mut: #9d978b; --panel: rgba(14,16,22,0.86); --line: rgba(255,255,255,0.12); }
+  :root { --acc: #ff2fb0; --acc2: #20e0ff; --txt: #f1ece2; --mut: #9d978b; --panel: rgba(14,16,22,0.86); --line: rgba(255,255,255,0.12); }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; overflow: hidden; background: #05060b; color: var(--txt); font-family: "Segoe UI", Tahoma, Arial, sans-serif; }
   #c { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
@@ -34,7 +34,7 @@
   #flash.on { opacity: 1; pointer-events: all; }
   #flashText { font-family: Impact, "Arial Black", sans-serif; font-size: clamp(26px, 4vw, 54px); color: #fff; text-shadow: 0 4px 30px #000, 0 0 12px #000; text-align: center; padding: 20px; letter-spacing: 1px; }
   /* Menü */
-  #menu { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: radial-gradient(900px 500px at 50% 30%, rgba(255,138,30,0.16), transparent 60%), rgba(4,5,9,0.72); backdrop-filter: blur(3px); }
+  #menu { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: radial-gradient(900px 500px at 50% 30%, rgba(255,47,176,0.16), transparent 60%), rgba(4,5,9,0.72); backdrop-filter: blur(3px); }
   .box { width: min(560px, 92vw); max-height: 96vh; overflow-y: auto; background: rgba(14,16,22,0.94); border: 1px solid var(--line); border-radius: 16px; padding: 26px 28px; box-shadow: 0 30px 80px rgba(0,0,0,0.6); }
   .brand small { display: block; font-family: Impact, "Arial Black", sans-serif; letter-spacing: 9px; color: #e9dcc3; font-size: 16px; }
   .brand h1 { margin: 2px 0 4px; font-family: Impact, "Arial Black", sans-serif; font-weight: 400; font-size: 54px; line-height: 1; color: var(--acc); letter-spacing: 1px; }
@@ -54,11 +54,22 @@
   .row label { flex: 1; margin: 0; }
   .row button { width: auto; white-space: nowrap; }
   #joinInfo { color: #f5b14a; font-size: 13px; min-height: 18px; margin-top: 6px; }
-  .myc { display: flex; justify-content: space-between; align-items: center; background: rgba(255,138,30,0.08); border: 1px solid rgba(255,138,30,0.3); border-radius: 10px; padding: 8px 14px; margin: 8px 0 4px; }
+  .myc { display: flex; justify-content: space-between; align-items: center; background: rgba(255,47,176,0.08); border: 1px solid rgba(255,47,176,0.3); border-radius: 10px; padding: 8px 14px; margin: 8px 0 4px; }
   .myc span { color: var(--mut); font-size: 13px; }
   .myc b { font-family: Consolas, monospace; font-size: 26px; letter-spacing: 5px; color: var(--acc); }
   .help { color: var(--mut); font-size: 12px; line-height: 1.6; margin-top: 14px; }
   #loadInfo { color: var(--mut); font-size: 12px; margin-top: 10px; text-align: center; }
+#djBox { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: rgba(5, 0, 10, 0.72); backdrop-filter: blur(4px); }
+#djBox.hidden { display: none; }
+#djBox .djp { position: relative; width: min(420px, calc(100vw - 32px)); padding: 26px 24px 22px; border-radius: 16px; background: #120c1a; border: 2px solid #ff2fb0; box-shadow: 0 0 50px rgba(255, 47, 176, 0.35); text-align: center; color: #fff; font-family: "Segoe UI", system-ui, sans-serif; }
+#djBox h2 { margin: 6px 0 4px; font: 400 40px Impact, "Arial Black", sans-serif; letter-spacing: 1px; color: #ff7fd8; }
+#djBox #djInfo { margin: 0 0 14px; color: #b9aec7; font-size: 14px; }
+#djBox img { width: 160px; height: 200px; object-fit: cover; border-radius: 10px; border: 2px solid #2b2236; }
+#djLinks { display: grid; gap: 8px; }
+#djLinks .djl { display: block; padding: 11px 14px; border-radius: 10px; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--c); color: #fff; text-decoration: none; font-weight: 700; font-size: 16px; }
+#djLinks .djl:hover, #djLinks .djl:focus-visible { background: var(--c); color: #000; outline: none; }
+#djLinks .djnone { color: #9d978b; font-size: 14px; margin: 6px 0 0; }
+#djClose { position: absolute; top: 8px; right: 10px; background: none; border: 0; color: #fff; font-size: 22px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -69,13 +80,14 @@
   <div id="toasts"></div>
   <div id="prompt" class="hidden"></div>
   <div id="clickHint" class="hidden">Klicken zum Weiterspielen</div>
-  <div id="keys"><kbd>W A S D</kbd> laufen · <kbd>Maus</kbd> umsehen · <kbd>Leertaste</kbd> springen · <kbd>Shift</kbd> langsam · In ein Portal laufen = Spiel starten · <kbd>Esc</kbd> Menü · <kbd>F11</kbd> Vollbild</div>
+  <div id="keys"><kbd>W A S D</kbd> laufen · <kbd>Maus</kbd> umsehen · <kbd>Leertaste</kbd> springen · <kbd>Shift</kbd> langsam · In ein Portal laufen = Spiel starten · Bilderrahmen anklicken = DJ-Links · <kbd>Esc</kbd> Menü · <kbd>F11</kbd> Vollbild</div>
 </div>
 <span id="netStatus" class="hidden"></span>
 <div id="flash"><div id="flashText"></div></div>
+<div id="djBox" class="hidden"><div class="djp"><button id="djClose" aria-label="Schließen">✕</button><img id="djPhoto" class="hidden" alt=""><h2 id="djName"></h2><p id="djInfo"></p><div id="djLinks"></div></div></div>
 <div id="menu">
   <div class="box">
-    <div class="brand"><small>GEORG BRUNNER</small><h1>GAMING <span>PORTAL</span></h1></div>
+    <div class="brand"><small>WILLKOMMEN IM</small><h1>SPK <span>PORTAL</span></h1></div>
     <p id="menuTitle">Lauf durch den Raum und geh in ein Portal, um ein Spiel zu starten.</p>
     <label>Dein Name <input id="name" maxlength="16"></label>
     <button id="bEnter" disabled>▶ Portal betreten</button>

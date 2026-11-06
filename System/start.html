@@ -6,18 +6,18 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="GB Portal">
+<meta name="apple-mobile-web-app-title" content="SPK Portal">
 <meta name="theme-color" content="#05060b">
-<title>Georg Brunner Gaming Portal</title>
+<title>SPK Portal</title>
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/System/assets/icon-192.png">
 <link rel="icon" href="/System/assets/icon-192.png">
 <style>
   /* Dunkle Arcade-Optik wie das 3D-Portal: Orange für Windows, Grün für Android, Blau für iPhone */
-  :root { --bg: #05060b; --panel: rgba(16, 18, 26, 0.92); --line: rgba(255, 255, 255, 0.12); --txt: #f1ece2; --mut: #9d978b; --acc: #ff8a1e; --and: #3ddc84; --ios: #37b6ff; color-scheme: dark; }
+  :root { --bg: #05060b; --panel: rgba(16, 18, 26, 0.92); --line: rgba(255, 255, 255, 0.12); --txt: #f1ece2; --mut: #9d978b; --acc: #ff2fb0; --and: #3ddc84; --ios: #37b6ff; color-scheme: dark; }
   * { box-sizing: border-box; }
   html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--txt); font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; }
-  body { background: radial-gradient(1000px 600px at 50% -10%, rgba(255, 138, 30, 0.18), transparent 60%), var(--bg); padding: max(18px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+  body { background: radial-gradient(1000px 600px at 50% -10%, rgba(255, 47, 176, 0.18), transparent 60%), var(--bg); padding: max(18px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
   .wrap { max-width: 980px; margin: 0 auto; }
   .hidden { display: none !important; }
   .brand { text-align: center; margin: 6px 0 22px; }
@@ -47,7 +47,7 @@
   .link { display: flex; gap: 8px; margin: 14px 0 4px; flex-wrap: wrap; }
   .link a#url { color: var(--acc); text-decoration: underline; font-weight: 700; }
   .link a#url, .link code { flex: 1; min-width: 0; background: #0b0c11; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 16px; overflow-wrap: anywhere; }
-  button, .btn { cursor: pointer; border: 0; border-radius: 10px; font-size: 16px; font-weight: 700; padding: 11px 16px; color: #1a1006; background: var(--acc); text-decoration: none; display: inline-block; text-align: center; }
+  button, .btn { cursor: pointer; border: 0; border-radius: 10px; font-size: 16px; font-weight: 700; padding: 11px 16px; color: #18030f; background: var(--acc); text-decoration: none; display: inline-block; text-align: center; }
   button.ghost, .btn.ghost { background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid var(--line); }
   button:focus-visible, .btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
   .back { margin-top: 14px; }
@@ -65,11 +65,22 @@
   .game .row > * { flex: 1; }
   .game input.code { font-family: Consolas, monospace; letter-spacing: 4px; text-transform: uppercase; text-align: center; margin: 0; }
   .install { border-color: rgba(61, 220, 132, 0.4); }
+  .djh { font-family: Impact, "Arial Black", sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 1px; color: var(--acc); margin: 28px 0 12px; }
+  .djs { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .dj { all: unset; cursor: pointer; display: flex; flex-direction: column; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px; text-align: center; }
+  .dj:focus-visible { outline: 2px solid #fff; }
+  .dj .ph { aspect-ratio: 4 / 5; max-width: 100%; border-radius: 8px; background: linear-gradient(#1a0f24, #07060c); display: grid; place-items: center; color: var(--mut); font-size: 13px; overflow: hidden; }
+  .dj .ph img { width: 100%; height: 100%; object-fit: cover; }
+  .dj b { font-family: Impact, "Arial Black", sans-serif; font-weight: 400; font-size: 20px; letter-spacing: .5px; }
+  .djlinks { display: grid; gap: 8px; margin-top: 12px; }
+  .djlinks a { display: block; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--line); color: #fff; text-decoration: none; font-weight: 700; background: rgba(255,255,255,0.06); }
+  #djSheet { position: fixed; inset: 0; z-index: 20; background: rgba(5,0,10,.75); display: flex; align-items: center; justify-content: center; padding: 16px; }
+  #djSheet .card { width: min(420px, 100%); margin: 0; text-align: center; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="brand"><small>GEORG BRUNNER</small><h1>GAMING <span>PORTAL</span></h1><p id="sub">Auf welchem Gerät willst du spielen?</p></div>
+  <div class="brand"><small>WILLKOMMEN IM</small><h1>SPK <span>PORTAL</span></h1><p id="sub">Auf welchem Gerät willst du spielen?</p></div>
 
   <!-- Auswahl -->
   <div id="choose">
@@ -85,7 +96,7 @@
   <div id="winPanel" class="card hidden">
     <h3>Windows</h3>
     <div class="link"><a class="btn" href="/System/konsole.html">▶ Jetzt im Browser spielen</a><a class="btn ghost" id="zipLink" href="https://drive.google.com/file/d/1t74E3O4zzbKzG_UFVYE-AJETJGJ26ShM/view" target="_blank" rel="noopener">⬇ Windows-Version herunterladen</a></div>
-    <p class="muted">Die Windows-Version herunterladen, Zip-Datei entpacken und „Georg Brunner Gaming Portal.bat“ doppelklicken. Sie aktualisiert sich danach von selbst.</p>
+    <p class="muted">Die Windows-Version herunterladen, Zip-Datei entpacken und „SPK Portal.bat“ doppelklicken. Sie aktualisiert sich danach von selbst.</p>
     <button class="ghost back" data-back>← Zurück</button>
   </div>
 
@@ -109,9 +120,12 @@
     <div id="installCard" class="card install hidden"><h3>Als App installieren</h3><ol id="mSteps"></ol></div>
     <div class="card"><label>Dein Name <input id="name" maxlength="16" autocomplete="off"></label><p class="muted">Halte das Handy beim Spielen quer. Um einem Freund beizutreten, gib den Code ein, der bei ihm im Spiel oben links steht.</p></div>
     <div class="games" id="games" style="margin-top:18px"></div>
+    <h3 class="djh">SPK DJs</h3>
+    <div class="djs" id="djs"></div>
   </div>
 </div>
 
+<div id="djSheet" class="hidden"><div class="card"><h3 id="dsName"></h3><p class="muted" id="dsInfo"></p><div class="djlinks" id="dsLinks"></div><button class="ghost back" id="dsClose">Schließen</button></div></div>
 <script src="/System/lib/qrcode.js"></script>
 <script>
 (function () {
@@ -185,7 +199,32 @@
     show('mobile');
     loadGames().then(renderGames).catch(function () { $('games').innerHTML = '<p class="muted">Spiele konnten nicht geladen werden. Bitte die Seite neu laden.</p>'; });
     scrollTo(0, 0);
+    loadDjs();
   }
+  var LINKS = [['instagram', 'Instagram'], ['facebook', 'Facebook'], ['soundcloud', 'SoundCloud'], ['tiktok', 'TikTok'], ['youtube', 'YouTube'], ['spotify', 'Spotify'], ['mixcloud', 'Mixcloud'], ['beatport', 'Beatport'], ['website', 'Webseite']];
+  function fotoUrl(f) { return /^(https?:)?\/\//.test(f) ? f : '/System/dj-fotos/' + f; }
+  function loadDjs() {
+    fetch('/System/djs.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (list) {
+      var box = $('djs'); box.innerHTML = '';
+      (list || []).forEach(function (dj, i) {
+        var b = document.createElement('button'); b.className = 'dj';
+        b.innerHTML = '<div class="ph">' + (dj.foto ? '<img alt="">' : 'Foto folgt') + '</div><b></b>';
+        if (dj.foto) b.querySelector('img').src = fotoUrl(dj.foto);
+        b.querySelector('b').textContent = dj.name || ('DJ ' + (i + 1));
+        b.onclick = function () { openDj(dj); };
+        box.appendChild(b);
+      });
+    }).catch(function () { });
+  }
+  function openDj(dj) {
+    $('dsName').textContent = dj.name || 'DJ'; $('dsInfo').textContent = dj.info || '';
+    var l = $('dsLinks'); l.innerHTML = '';
+    LINKS.forEach(function (k) { if (!dj[k[0]]) return; var a = document.createElement('a'); a.href = dj[k[0]]; a.target = '_blank'; a.rel = 'noopener'; a.textContent = k[1]; l.appendChild(a); });
+    if (!l.children.length) l.innerHTML = '<p class="muted">Für diesen DJ sind noch keine Links eingetragen.</p>';
+    $('djSheet').classList.remove('hidden');
+  }
+  $('dsClose').onclick = function () { $('djSheet').classList.add('hidden'); };
+  $('djSheet').onclick = function (e) { if (e.target.id === 'djSheet') $('djSheet').classList.add('hidden'); };
 })();
 </script>
 </body>

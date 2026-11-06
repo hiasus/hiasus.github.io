@@ -1,0 +1,4 @@
+Hier kommen die Fotos der SPK DJs hinein (z. B. "dj1.jpg").
+Welcher DJ welches Foto bekommt und seine Links (Instagram, Facebook,
+SoundCloud ...) stehen in der Datei  ..\djs.json
+Am einfachsten: Fotos und Links an Claude schicken, Claude traegt alles ein.
