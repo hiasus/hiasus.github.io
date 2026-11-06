@@ -104,6 +104,7 @@
 #tBtns { position: absolute; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 12px; align-items: flex-end; }
 #touch .tb { width: 66px; height: 66px; margin: 0; padding: 0; border-radius: 50%; border: 2px solid rgba(255,255,255,0.55); background: rgba(20,16,30,0.55); color: #fff; font: 800 12px system-ui, sans-serif; touch-action: none; }
 #touch .tb.big { width: 86px; height: 86px; font-size: 26px; }
+#touch .tb.mic { background: #e0245e; border-color: #ff8fb0; box-shadow: 0 0 14px rgba(255,40,100,0.8); }
 #touch .tb.hot { background: rgba(255,47,176,0.6); border-color: #ff7fd8; }
 #touch .tb.on { transform: scale(0.92); filter: brightness(1.4); }
 #tPause { position: absolute; top: calc(10px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); width: 52px; height: 38px; margin: 0; padding: 0; border-radius: 10px; border: 1px solid rgba(255,255,255,0.4); background: rgba(0,0,0,0.45); color: #fff; font-size: 20px; }
@@ -136,7 +137,7 @@ body.touch #prompt { top: auto; bottom: 120px; font-size: 15px; }
   <div id="toasts"></div>
   <div id="prompt" class="hidden"></div>
   <div id="clickHint" class="hidden">Klicken zum Weiterspielen</div>
-  <div id="keys"><kbd>W A S D</kbd> laufen · <kbd>Maus</kbd> umsehen · <kbd>Leertaste</kbd> springen · <kbd>Shift</kbd> langsam · <kbd>V</kbd> halten = sprechen · In ein Portal laufen = Spiel starten · Bilderrahmen anklicken = DJ-Links · <kbd>Esc</kbd> Menü · <kbd>F11</kbd> Vollbild</div>
+  <div id="keys"><kbd>W A S D</kbd> laufen · <kbd>Maus</kbd> umsehen · <kbd>Leertaste</kbd> springen · <kbd>Shift</kbd> langsam · <kbd>V</kbd> = Mikro an/aus · In ein Portal laufen = Spiel starten · Bilderrahmen anklicken = DJ-Links · <kbd>Esc</kbd> Menü · <kbd>F11</kbd> Vollbild</div>
 </div>
 <span id="netStatus" class="hidden"></span>
 <div id="flash"><div id="flashText"></div></div>

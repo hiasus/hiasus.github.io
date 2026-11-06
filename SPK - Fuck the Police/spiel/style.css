@@ -130,6 +130,7 @@ details { text-align: left; margin-top: 10px; color: var(--mut); font-size: 13px
 #tBtns .tb.grab { background: rgba(57, 255, 136, 0.35); border-color: #39ff88; }
 #tBtns .tb.gas { background: rgba(57, 255, 136, 0.35); border-color: #39ff88; }
 #tBtns .tb.brake { background: rgba(255, 70, 70, 0.35); border-color: #ff6a6a; }
+#tBtns .tb.mic { background: #e0245e; border-color: #ff8fb0; color: #fff; box-shadow: 0 0 14px rgba(255,40,100,0.8); }
 #tBtns .tb.hot { background: rgba(255, 226, 47, 0.55); border-color: #ffe22f; color: #111; }
 #tBtns .tb.on { transform: scale(0.92); filter: brightness(1.5); }
 #tPause { position: absolute; top: calc(10px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); width: 46px; height: 34px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.4); background: rgba(0, 0, 0, 0.45); color: #fff; font: 700 14px system-ui; }
